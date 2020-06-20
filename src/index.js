@@ -6,6 +6,7 @@ import {
   Text,
   StyleSheet,
   StatusBar,
+  TouchableOpacity,
 } from 'react-native';
 
 import api from './services/api';
@@ -18,6 +19,17 @@ export default function App() {
       setProjects(response.data);
     });
   }, []);
+
+  async function handleAddProject(){
+    const response = await api.post('projects', {
+      title: `Novo Projeto ${Date.now()}`,
+      owner: 'Jonathan Cavalcante',
+    });
+
+    const project = response.data;
+
+    setProjects([...projects, project]);
+  }
 
   return (
     <>
@@ -32,6 +44,15 @@ export default function App() {
             <Text style={styles.project}>{project.title}</Text>
           )} /* O render, renderiza a lista com os itens sendo iterados, sendo que item recebe o project */
         />
+
+        {/* Adicionando um botão que podemos estilizar, o Button é um botão que já vem estilizado, por isso não utilizaremos ele */}
+        <TouchableOpacity
+          activeOpacity={0.7}
+          style={styles.button}
+          onPress={handleAddProject}
+        >
+          <Text style={styles.buttonText}>Adicionar projeto</Text>
+        </TouchableOpacity>
       </SafeAreaView>
     </>
   );
@@ -45,6 +66,21 @@ const styles = StyleSheet.create({
 
   project: {
     color: '#fff',
-    fontSize: 30,
+    fontSize: 20,
+  },
+
+  button: {
+    backgroundColor: '#fdfdfd',
+    margin: 20,
+    height: 50,
+    borderRadius: 4,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  buttonText: {
+    fontWeight: 'bold',
+    color: '#333333',
+    fontSize: 20,
   },
 });
